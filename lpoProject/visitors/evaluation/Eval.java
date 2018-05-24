@@ -88,7 +88,7 @@ public class Eval implements Visitor<Value> {
 
 	@Override
 	public Value visitBoolLiteral(boolean value) {
-		return null;
+		return new BoolValue(value);
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class Eval implements Visitor<Value> {
 
 	@Override
 	public Value visitEq(Exp left, Exp right) {
-		return null;
+		return new BoolValue(left.accept(this).equals(right.accept(this)));
 	}
 
 	@Override

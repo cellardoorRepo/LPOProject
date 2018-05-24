@@ -127,6 +127,15 @@ public class StreamParser implements Parser {
 		return exp;
 	}
 
+	private Exp parseEq() throws ParserException {
+		Exp exp	= parseAdd();
+		while (tokenizer.tokenType() == EQ) {
+			tryNext();
+			exp = new Eq(exp, parseAdd());
+		}
+		return exp;
+	}
+
 	private Exp parseAdd() throws ParserException {
 		Exp exp = parseMul();
 		while (tokenizer.tokenType() == PLUS) {
