@@ -9,7 +9,7 @@ Prog ::= StmtSeq 'EOF'
  StmtSeq ::= Stmt (';' StmtSeq)?
  Stmt ::= 'var'? ID '=' Exp | 'print' Exp |  'for' ID ':' Exp '{' StmtSeq '}'
  ExpSeq ::= Exp (',' ExpSeq)?
- Exp ::= Add ('::' Exp)?
+ Exp ::= Add ('::' Exp)? | Exp&&Exp | Exp==Exp | !Exp | opt Exp | empty Exp | def Exp | get Exp
  Add ::= Mul ('+' Mul)*
  Mul::= Atom ('*' Atom)*
  Atom ::= '-' Atom | '[' ExpSeq ']' | NUM | ID | '(' Exp ')'
@@ -119,10 +119,10 @@ public class StreamParser implements Parser {
 	}
 
 	private Exp parseExp() throws ParserException {
-		Exp exp = parseAdd();
+		Exp exp = parseEq();
 		if (tokenizer.tokenType() == PREFIX) {
 			tryNext();
-			exp = new Prefix(exp, parseExp());
+			exp = new Prefix(exp, parseEq());
 		}
 		return exp;
 	}
