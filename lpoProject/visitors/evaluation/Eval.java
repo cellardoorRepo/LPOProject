@@ -87,6 +87,11 @@ public class Eval implements Visitor<Value> {
 	}
 
 	@Override
+	public Value visitBoolLiteral(boolean value) {
+		return null;
+	}
+
+	@Override
 	public Value visitListLiteral(ExpSeq exps) {
 		return exps.accept(this);
 	}
@@ -94,6 +99,21 @@ public class Eval implements Visitor<Value> {
 	@Override
 	public Value visitMul(Exp left, Exp right) {
 		return new IntValue(left.accept(this).asInt() * right.accept(this).asInt());
+	}
+
+	@Override
+	public Value visitNot(Exp exp) {
+		return null;
+	}
+
+	@Override
+	public Value visitAnd(Exp left, Exp right) {
+		return null;
+	}
+
+	@Override
+	public Value visitEq(Exp left, Exp right) {
+		return null;
 	}
 
 	@Override

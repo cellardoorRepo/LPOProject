@@ -22,7 +22,7 @@ public class StreamTokenizer implements Tokenizer {
 		// remark: groups must correspond to the ordinal of the corresponding
 		// token type
 		final String identRegEx = "([a-zA-Z][a-zA-Z0-9]*)"; // group 1
-		final String numRegEx = "(0|[1-9][0-9]*)"; // group 2
+		final String numRegEx = "([1-9][0-9]*|(?:(?:0b|0B)[01]+)|0)"; // group 2
 		final String skipRegEx = "(\\s+|//.*)"; // group 3
 		final String symbolRegEx = "\\+|\\*|=|\\(|\\)|;|,|\\{|\\}|-|::|:|\\[|\\]";
 		regEx = identRegEx + "|" + numRegEx + "|" + skipRegEx + "|" + symbolRegEx;
@@ -68,7 +68,12 @@ public class StreamTokenizer implements Tokenizer {
 		}
 		if (scanner.group(NUM.ordinal()) != null) { // NUM
 			tokenType = NUM;
-			intValue = Integer.parseInt(tokenString);
+			if(tokenString.length() > 1 && (tokenString.charAt(1) == 'b' || tokenString.charAt(1) == 'B')) {
+				tokenString = tokenString.substring(2);
+				intValue = Integer.parseInt(tokenString, 2);
+			}
+			else
+				intValue = Integer.parseInt(tokenString);
 			return;
 		}
 		if (scanner.group(SKIP.ordinal()) != null) { // SKIP

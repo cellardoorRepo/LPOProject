@@ -21,7 +21,7 @@ public class ScannerTest {
 	}
 
 	public static void main(String[] args) {
-		final String regEx = "([a-zA-Z][a-zA-Z0-9]*)|(0|[1-9][0-9]*)|(\\s+|//.*)";
+		final String regEx = "([a-zA-Z][a-zA-Z0-9]*)|([1-9][0-9]*|(?:(?:0b|0B)[01]+)|0)|(\\s+|//.*)";
 		try (StreamScanner sc = new StreamScanner(regEx,
 				args.length > 0 ? new FileReader(args[0]) : new InputStreamReader(System.in))) {
 			while (sc.hasNext())
