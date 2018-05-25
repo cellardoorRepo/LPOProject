@@ -116,7 +116,9 @@ public class TypeCheck implements Visitor<Type> {
 
     @Override
     public Type visitAnd(Exp left, Exp right) {
-	    checkBinOp(left, right, BOOL);
+//	    Type expected = left.accept(this);
+//	    right.accept(this).checkEqual(expected);
+		checkBinOp(left, right, BOOL);
 	    return BOOL;
     }
 
@@ -142,8 +144,7 @@ public class TypeCheck implements Visitor<Type> {
 
 	@Override
 	public Type visitIdent(String name) {
-		env.lookup(new SimpleIdent(name));
-		return null;
+		return env.lookup(new SimpleIdent(name));
 	}
 
 	// static semantics of sequences of expressions

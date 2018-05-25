@@ -119,10 +119,20 @@ public class StreamParser implements Parser {
 	}
 
 	private Exp parseExp() throws ParserException {
-		Exp exp = parseEq();
+		Exp exp = parseAnd();
 		if (tokenizer.tokenType() == PREFIX) {
 			tryNext();
-			exp = new Prefix(exp, parseEq());
+			exp = new Prefix(exp, parseAnd());
+		}
+		return exp;
+	}
+
+
+	private Exp parseAnd() throws ParserException {
+		Exp exp = parseEq();
+		while(tokenizer.tokenType() == AND) {
+			tryNext();
+			exp = new And(exp, parseEq());
 		}
 		return exp;
 	}
@@ -162,6 +172,8 @@ public class StreamParser implements Parser {
 			return parseNum();
 		case IDENT:
 			return parseIdent();
+			case NOT:
+				return parseNot();
 		case MINUS:
 			return parseMinus();
 		case OPEN_LIST:
@@ -181,6 +193,11 @@ public class StreamParser implements Parser {
 		String name = tokenizer.tokenString();
 		consume(IDENT); // or tryNext();
 		return new SimpleIdent(name);
+	}
+
+	private Not parseNot() throws ParserException {
+		consume(NOT);
+		return new Not(parseAtom());
 	}
 
 	private Sign parseMinus() throws ParserException {
