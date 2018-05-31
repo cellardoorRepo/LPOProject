@@ -125,7 +125,8 @@ public class TypeCheck implements Visitor<Type> {
     @Override
     public Type visitEq(Exp left, Exp right) {
 	    Type expected  = left.accept(this);
-	    right.accept(this).checkEqual(expected);
+	    expected.checkEqual(right.accept(this));
+		//right.accept(this).checkEqual(expected);
 	    return BOOL;
     }
 

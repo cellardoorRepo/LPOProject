@@ -66,7 +66,7 @@ public class StreamParser implements Parser {
 	}
 
 	private ExpSeq parseExpSeq() throws ParserException {
-		Exp exp = parseExp();
+		Exp exp = parseAnd();
 		if (tokenizer.tokenType() == EXP_SEP) {
 			tryNext();
 			return new MoreExp(exp, parseExpSeq());
@@ -91,27 +91,27 @@ public class StreamParser implements Parser {
 
 	private PrintStmt parsePrintStmt() throws ParserException {
 		consume(PRINT); // or tryNext();
-		return new PrintStmt(parseExp());
+		return new PrintStmt(parseAnd());
 	}
 
 	private VarStmt parseVarStmt() throws ParserException {
 		consume(VAR); // or tryNext();
 		Ident ident = parseIdent();
 		consume(ASSIGN);
-		return new VarStmt(ident, parseExp());
+		return new VarStmt(ident, parseAnd());
 	}
 
 	private AssignStmt parseAssignStmt() throws ParserException {
 		Ident ident = parseIdent();
 		consume(ASSIGN);
-		return new AssignStmt(ident, parseExp());
+		return new AssignStmt(ident, parseAnd());
 	}
 
 	private ForEachStmt parseForEachStmt() throws ParserException {
 		consume(FOR); // or tryNext();
 		Ident ident = parseIdent();
 		consume(IN);
-		Exp exp = parseExp();
+		Exp exp = parseAnd();
 		consume(OPEN_BLOCK);
 		StmtSeq stmts = parseStmtSeq();
 		consume(CLOSE_BLOCK);
@@ -119,10 +119,10 @@ public class StreamParser implements Parser {
 	}
 
 	private Exp parseExp() throws ParserException {
-		Exp exp = parseAnd();
+		Exp exp = parseAdd();
 		if (tokenizer.tokenType() == PREFIX) {
 			tryNext();
-			exp = new Prefix(exp, parseAnd());
+			exp = new Prefix(exp, parseAdd());
 		}
 		return exp;
 	}
@@ -138,10 +138,10 @@ public class StreamParser implements Parser {
 	}
 
 	private Exp parseEq() throws ParserException {
-		Exp exp	= parseAdd();
+		Exp exp	= parseExp();
 		while (tokenizer.tokenType() == EQ) {
 			tryNext();
-			exp = new Eq(exp, parseAdd());
+			exp = new Eq(exp, parseExp());
 		}
 		return exp;
 	}
@@ -170,6 +170,8 @@ public class StreamParser implements Parser {
 			unexpectedTokenError();
 		case NUM:
 			return parseNum();
+            case BOOL:
+                return parseBool();
 		case IDENT:
 			return parseIdent();
 			case NOT:
@@ -188,6 +190,12 @@ public class StreamParser implements Parser {
 		consume(NUM); // or tryNext();
 		return new IntLiteral(val);
 	}
+
+	private BoolLiteral parseBool() throws ParserException {
+	    boolean val = tokenizer.boolValue();
+	    consume(BOOL);
+	    return new BoolLiteral(val);
+    }
 
 	private Ident parseIdent() throws ParserException {
 		String name = tokenizer.tokenString();
@@ -214,7 +222,7 @@ public class StreamParser implements Parser {
 
 	private Exp parseRoundPar() throws ParserException {
 		consume(OPEN_PAR); // or tryNext();
-		Exp exp = parseExp();
+		Exp exp = parseAnd();
 		consume(CLOSE_PAR);
 		return exp;
 	}
