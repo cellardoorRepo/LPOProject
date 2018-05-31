@@ -88,7 +88,7 @@ public class Eval implements Visitor<Value> {
 
 	@Override
 	public Value visitBoolLiteral(boolean value) {
-		return null;
+		return new BoolValue(value);
 	}
 
 	@Override
@@ -103,27 +103,28 @@ public class Eval implements Visitor<Value> {
 
 	@Override
 	public Value visitNot(Exp exp) {
-		return null;
+		return new BoolValue(! exp.accept(this).asBool());
 	}
 
 	@Override
 	public Value visitAnd(Exp left, Exp right) {
-		return null;
+		return new BoolValue(left.accept(this).asBool() && right.accept(this).asBool());
 	}
 
 	@Override
 	public Value visitEq(Exp left, Exp right) {
-		return null;
+		return new BoolValue(left.accept(this).equals(right.accept(this)));
 	}
 
 	@Override
 	public Value visitPrefix(Exp left, Exp right) {
-		return new LinkedListValue(left.accept(this), right.accept(this).asList());
+		Value el = left.accept(this);
+		return right.accept(this).asList().prefix(el);
 	}
 
 	@Override
 	public Value visitSign(Exp exp) {
-		return new IntValue(-(exp.accept(this).asInt()));
+		return new IntValue(-exp.accept(this).asInt());
 	}
 
 	@Override

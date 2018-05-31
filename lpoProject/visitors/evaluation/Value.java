@@ -14,4 +14,8 @@ public interface Value {
 		throw new ClassCastException("Expecting a list value");
 	}
 
+	default boolean asBool() {
+		throw new ClassCastException("Expecting a boolean value");
+	}
+
 }

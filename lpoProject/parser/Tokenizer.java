@@ -8,6 +8,8 @@ public interface Tokenizer extends AutoCloseable {
 
 	int intValue();
 
+	boolean boolValue();
+
 	TokenType tokenType();
 
 	boolean hasNext();

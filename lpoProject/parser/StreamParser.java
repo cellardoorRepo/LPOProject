@@ -9,7 +9,7 @@ Prog ::= StmtSeq 'EOF'
  StmtSeq ::= Stmt (';' StmtSeq)?
  Stmt ::= 'var'? ID '=' Exp | 'print' Exp |  'for' ID ':' Exp '{' StmtSeq '}'
  ExpSeq ::= Exp (',' ExpSeq)?
- Exp ::= Add ('::' Exp)?
+ Exp ::= Add ('::' Exp)? | Exp&&Exp | Exp==Exp | !Exp | opt Exp | empty Exp | def Exp | get Exp
  Add ::= Mul ('+' Mul)*
  Mul::= Atom ('*' Atom)*
  Atom ::= '-' Atom | '[' ExpSeq ']' | NUM | ID | '(' Exp ')'
@@ -66,7 +66,7 @@ public class StreamParser implements Parser {
 	}
 
 	private ExpSeq parseExpSeq() throws ParserException {
-		Exp exp = parseExp();
+		Exp exp = parseAnd();
 		if (tokenizer.tokenType() == EXP_SEP) {
 			tryNext();
 			return new MoreExp(exp, parseExpSeq());
@@ -91,27 +91,27 @@ public class StreamParser implements Parser {
 
 	private PrintStmt parsePrintStmt() throws ParserException {
 		consume(PRINT); // or tryNext();
-		return new PrintStmt(parseExp());
+		return new PrintStmt(parseAnd());
 	}
 
 	private VarStmt parseVarStmt() throws ParserException {
 		consume(VAR); // or tryNext();
 		Ident ident = parseIdent();
 		consume(ASSIGN);
-		return new VarStmt(ident, parseExp());
+		return new VarStmt(ident, parseAnd());
 	}
 
 	private AssignStmt parseAssignStmt() throws ParserException {
 		Ident ident = parseIdent();
 		consume(ASSIGN);
-		return new AssignStmt(ident, parseExp());
+		return new AssignStmt(ident, parseAnd());
 	}
 
 	private ForEachStmt parseForEachStmt() throws ParserException {
 		consume(FOR); // or tryNext();
 		Ident ident = parseIdent();
 		consume(IN);
-		Exp exp = parseExp();
+		Exp exp = parseAnd();
 		consume(OPEN_BLOCK);
 		StmtSeq stmts = parseStmtSeq();
 		consume(CLOSE_BLOCK);
@@ -122,7 +122,26 @@ public class StreamParser implements Parser {
 		Exp exp = parseAdd();
 		if (tokenizer.tokenType() == PREFIX) {
 			tryNext();
-			exp = new Prefix(exp, parseExp());
+			exp = new Prefix(exp, parseAdd());
+		}
+		return exp;
+	}
+
+
+	private Exp parseAnd() throws ParserException {
+		Exp exp = parseEq();
+		while(tokenizer.tokenType() == AND) {
+			tryNext();
+			exp = new And(exp, parseEq());
+		}
+		return exp;
+	}
+
+	private Exp parseEq() throws ParserException {
+		Exp exp	= parseExp();
+		while (tokenizer.tokenType() == EQ) {
+			tryNext();
+			exp = new Eq(exp, parseExp());
 		}
 		return exp;
 	}
@@ -151,8 +170,12 @@ public class StreamParser implements Parser {
 			unexpectedTokenError();
 		case NUM:
 			return parseNum();
+            case BOOL:
+                return parseBool();
 		case IDENT:
 			return parseIdent();
+			case NOT:
+				return parseNot();
 		case MINUS:
 			return parseMinus();
 		case OPEN_LIST:
@@ -168,10 +191,21 @@ public class StreamParser implements Parser {
 		return new IntLiteral(val);
 	}
 
+	private BoolLiteral parseBool() throws ParserException {
+	    boolean val = tokenizer.boolValue();
+	    consume(BOOL);
+	    return new BoolLiteral(val);
+    }
+
 	private Ident parseIdent() throws ParserException {
 		String name = tokenizer.tokenString();
 		consume(IDENT); // or tryNext();
 		return new SimpleIdent(name);
+	}
+
+	private Not parseNot() throws ParserException {
+		consume(NOT);
+		return new Not(parseAtom());
 	}
 
 	private Sign parseMinus() throws ParserException {
@@ -188,7 +222,7 @@ public class StreamParser implements Parser {
 
 	private Exp parseRoundPar() throws ParserException {
 		consume(OPEN_PAR); // or tryNext();
-		Exp exp = parseExp();
+		Exp exp = parseAnd();
 		consume(CLOSE_PAR);
 		return exp;
 	}
