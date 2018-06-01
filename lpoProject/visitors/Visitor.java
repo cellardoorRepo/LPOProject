@@ -1,10 +1,6 @@
 package lpoProject.visitors;
 
-import lpoProject.parser.ast.Exp;
-import lpoProject.parser.ast.ExpSeq;
-import lpoProject.parser.ast.Ident;
-import lpoProject.parser.ast.Stmt;
-import lpoProject.parser.ast.StmtSeq;
+import lpoProject.parser.ast.*;
 
 public interface Visitor<T> {
 	T visitAdd(Exp left, Exp right);
@@ -12,6 +8,8 @@ public interface Visitor<T> {
 	T visitAssignStmt(Ident ident, Exp exp);
 
 	T visitForEachStmt(Ident ident, Exp exp, StmtSeq block);
+
+	T visitIfStmt(Exp guard, StmtSeq block, StmtSeq elseBlock);
 
 	T visitIntLiteral(int value);
 

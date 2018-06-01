@@ -3,7 +3,7 @@ package lpoProject.visitors.typechecking;
 public interface Type {
 	default Type checkEqual(Type found) throws TypecheckerException {
 		if (!equals(found))
-			throw new TypecheckerException(found.toString(), toString());
+			throw new TypecheckerException(toString(), found.toString());
 		return this;
 	}
 

@@ -4,12 +4,7 @@ import static lpoProject.visitors.typechecking.PrimtType.*;
 
 import lpoProject.environments.EnvironmentException;
 import lpoProject.environments.GenEnvironment;
-import lpoProject.parser.ast.Exp;
-import lpoProject.parser.ast.ExpSeq;
-import lpoProject.parser.ast.Ident;
-import lpoProject.parser.ast.SimpleIdent;
-import lpoProject.parser.ast.Stmt;
-import lpoProject.parser.ast.StmtSeq;
+import lpoProject.parser.ast.*;
 import lpoProject.visitors.Visitor;
 
 public class TypeCheck implements Visitor<Type> {
@@ -55,6 +50,20 @@ public class TypeCheck implements Visitor<Type> {
 		env.dec(ident, ty);
 		block.accept(this);
 		env.exitLevel();
+		return null;
+	}
+
+	@Override
+	public Type visitIfStmt(Exp guard, StmtSeq block, StmtSeq elseBlock){
+		guard.accept(this).checkEqual(BOOL);
+		env.enterLevel();
+		block.accept(this);
+		env.exitLevel();
+		if(elseBlock != null) {
+			env.enterLevel();
+			elseBlock.accept(this);
+			env.exitLevel();
+		}
 		return null;
 	}
 

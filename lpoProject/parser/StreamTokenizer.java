@@ -35,6 +35,10 @@ public class StreamTokenizer implements Tokenizer {
 		keywords.put("print", PRINT);
 		keywords.put("var", VAR);
 		keywords.put("true", BOOL);
+		keywords.put("if", IF);
+		keywords.put("else", ELSE);
+		keywords.put("do", DO);
+		keywords.put("while", WHILE);
 	}
 
 	static {

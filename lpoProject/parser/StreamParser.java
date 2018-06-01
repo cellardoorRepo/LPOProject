@@ -86,6 +86,8 @@ public class StreamParser implements Parser {
 			return parseAssignStmt();
 		case FOR:
 			return parseForEachStmt();
+			case IF:
+				return parseIfStmt();
 		}
 	}
 
@@ -116,6 +118,25 @@ public class StreamParser implements Parser {
 		StmtSeq stmts = parseStmtSeq();
 		consume(CLOSE_BLOCK);
 		return new ForEachStmt(ident, exp, stmts);
+	}
+
+	private IfStmt parseIfStmt() throws ParserException {
+		consume(IF);
+//		consume(OPEN_PAR);
+//		BoolLiteral guard = parseBool();
+//		consume(CLOSE_PAR);
+		Exp guard = parseRoundPar();
+		consume(OPEN_BLOCK);
+		StmtSeq block = parseStmtSeq();
+		consume(CLOSE_BLOCK);
+		if(tokenizer.tokenType() == ELSE) {
+			consume(ELSE);
+			consume(OPEN_BLOCK);
+			StmtSeq elseBlock = parseStmtSeq();
+			consume(CLOSE_BLOCK);
+			return new IfStmt(guard, block, elseBlock);
+		}
+		return new IfStmt(guard, block, null);
 	}
 
 	private Exp parseExp() throws ParserException {
