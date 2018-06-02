@@ -11,6 +11,8 @@ public interface Visitor<T> {
 
 	T visitIfStmt(Exp guard, StmtSeq block, StmtSeq elseBlock);
 
+	T visitDoWhileStmt(StmtSeq block, Exp guard);
+
 	T visitIntLiteral(int value);
 
 	T visitBoolLiteral(boolean value);
@@ -20,7 +22,6 @@ public interface Visitor<T> {
 	T visitMoreExp(Exp first, ExpSeq rest);
 
 	T visitMoreStmt(Stmt first, StmtSeq rest);
-
 
 	T visitMul(Exp left, Exp right);
 
