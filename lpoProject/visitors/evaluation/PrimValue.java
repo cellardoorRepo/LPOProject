@@ -9,6 +9,10 @@ public abstract class PrimValue<T> implements Value {
 		this.value = requireNonNull(value);
 	}
 
+	public T getValue() {
+		return value;
+	}
+
 	@Override
 	public int hashCode() {
 		return value.hashCode();

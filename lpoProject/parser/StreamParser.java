@@ -3,6 +3,11 @@ package lpoProject.parser;
 import static lpoProject.parser.TokenType.*;
 
 import lpoProject.parser.ast.*;
+import lpoProject.visitors.typechecking.PrimtType;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 /*
 Prog ::= StmtSeq 'EOF'
@@ -215,6 +220,8 @@ public class StreamParser implements Parser {
 			return parseList();
 		case OPEN_PAR:
 			return parseRoundPar();
+			case OPT:
+				return parseOpt();
 		}
 	}
 
@@ -235,6 +242,37 @@ public class StreamParser implements Parser {
 		consume(IDENT); // or tryNext();
 		return new SimpleIdent(name);
 	}
+
+	private OptLiteral parseOpt() throws ParserException {
+		//Optional val = tokenizer.optValue();
+		consume(OPT);
+		TokenType val = tokenizer.tokenType();
+		if(val != EOF && val != SKIP)
+			return new OptLiteral(parseAdd());
+		return new OptLiteral();
+
+//		switch (val) {
+//			case NUM:
+//				int valueInt = tokenizer.intValue();
+//				//consume(NUM);
+//				return new OptLiteral(parseNum());
+//			case BOOL:
+//				boolean valueBool = tokenizer.boolValue();
+//				//consume(BOOL);
+//				return new OptLiteral(parseBool());
+//			case OPEN_LIST:
+//				return new OptLiteral(parseList());
+//			default:
+//				return new OptLiteral();
+
+		}
+//		if(tokenizer.tokenType() == BOOL) {
+//			boolean val = tokenizer.boolValue();
+//			consume(BOOL);
+//			return new OptLiteral<>(Optional.of(tokenizer.boolValue()));
+//		}
+		//return null;
+//	}
 
 	private Not parseNot() throws ParserException {
 		consume(NOT);

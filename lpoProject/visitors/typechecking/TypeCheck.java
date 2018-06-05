@@ -116,6 +116,12 @@ public class TypeCheck implements Visitor<Type> {
 	    return BOOL;
     }
 
+    @Override
+	public Type visitOptLiteral(Exp value) {
+		//return new OptType(value.accept(this));
+		return OPT;
+	}
+
 	@Override
 	public Type visitListLiteral(ExpSeq exps) {
 		return new ListType(exps.accept(this));

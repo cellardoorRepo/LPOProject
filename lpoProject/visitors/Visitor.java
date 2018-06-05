@@ -1,6 +1,9 @@
 package lpoProject.visitors;
 
 import lpoProject.parser.ast.*;
+import lpoProject.visitors.evaluation.PrimValue;
+
+import java.util.Optional;
 
 public interface Visitor<T> {
 	T visitAdd(Exp left, Exp right);
@@ -16,6 +19,10 @@ public interface Visitor<T> {
 	T visitIntLiteral(int value);
 
 	T visitBoolLiteral(boolean value);
+
+	T visitOptLiteral(Exp value);
+
+	//T visitIntOptLiteral(Integer value);
 
 	T visitListLiteral(ExpSeq exps);
 

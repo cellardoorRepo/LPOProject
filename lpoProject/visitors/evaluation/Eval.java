@@ -2,13 +2,9 @@ package lpoProject.visitors.evaluation;
 
 import lpoProject.environments.EnvironmentException;
 import lpoProject.environments.GenEnvironment;
-import lpoProject.parser.ast.Exp;
-import lpoProject.parser.ast.ExpSeq;
-import lpoProject.parser.ast.Ident;
-import lpoProject.parser.ast.SimpleIdent;
-import lpoProject.parser.ast.Stmt;
-import lpoProject.parser.ast.StmtSeq;
+import lpoProject.parser.ast.*;
 import lpoProject.visitors.Visitor;
+
 
 public class Eval implements Visitor<Value> {
 
@@ -117,6 +113,11 @@ public class Eval implements Visitor<Value> {
 	@Override
 	public Value visitBoolLiteral(boolean value) {
 		return new BoolValue(value);
+	}
+
+	@Override
+	public Value visitOptLiteral(Exp value) {
+	    return new OptValue(value.accept(this));
 	}
 
 	@Override
