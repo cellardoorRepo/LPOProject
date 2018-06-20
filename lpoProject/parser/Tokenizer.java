@@ -1,5 +1,7 @@
 package lpoProject.parser;
 
+import java.util.Optional;
+
 public interface Tokenizer extends AutoCloseable {
 
 	TokenType next() throws TokenizerException;
@@ -9,6 +11,8 @@ public interface Tokenizer extends AutoCloseable {
 	int intValue();
 
 	boolean boolValue();
+
+	Optional optValue();
 
 	TokenType tokenType();
 

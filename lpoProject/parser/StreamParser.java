@@ -3,6 +3,11 @@ package lpoProject.parser;
 import static lpoProject.parser.TokenType.*;
 
 import lpoProject.parser.ast.*;
+import lpoProject.visitors.typechecking.PrimtType;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 /*
 Prog ::= StmtSeq 'EOF'
@@ -215,6 +220,14 @@ public class StreamParser implements Parser {
 			return parseList();
 		case OPEN_PAR:
 			return parseRoundPar();
+			case OPT:
+				return parseOpt();
+			case GET:
+				return parseGet();
+			case EMPTY:
+				return parseEmpty();
+			case DEF:
+				return parseDef();
 		}
 	}
 
@@ -234,6 +247,30 @@ public class StreamParser implements Parser {
 		String name = tokenizer.tokenString();
 		consume(IDENT); // or tryNext();
 		return new SimpleIdent(name);
+	}
+
+	private OptLiteral parseOpt() throws ParserException {
+		consume(OPT);
+		return new OptLiteral(parseExp());
+	}
+
+	private Get parseGet() throws ParserException {
+		consume(GET);
+		if(tokenizer.tokenType() == IDENT)
+			return new Get(parseIdent());
+		return new Get(parseExp());
+	}
+
+	private Empty parseEmpty() throws ParserException {
+		consume(EMPTY);
+		if(tokenizer.tokenType() == IDENT)
+			return new Empty(parseIdent());
+		return new Empty(parseExp());
+	}
+
+	private Def parseDef() throws ParserException {
+		consume(DEF);
+		return new Def(parseExp());
 	}
 
 	private Not parseNot() throws ParserException {

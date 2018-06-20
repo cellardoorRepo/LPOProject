@@ -5,6 +5,7 @@ import static lpoProject.parser.TokenType.*;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class StreamTokenizer implements Tokenizer {
 	private static final String regEx;
@@ -17,6 +18,7 @@ public class StreamTokenizer implements Tokenizer {
 	private String tokenString;
 	private boolean boolValue;
 	private int intValue;
+	private Optional optValue;
 	private final Scanner scanner;
 
 	static {
@@ -39,6 +41,10 @@ public class StreamTokenizer implements Tokenizer {
 		keywords.put("else", ELSE);
 		keywords.put("do", DO);
 		keywords.put("while", WHILE);
+		keywords.put("opt", OPT);
+		keywords.put("get", GET);
+		keywords.put("empty", EMPTY);
+		keywords.put("def", DEF);
 	}
 
 	static {
@@ -139,6 +145,12 @@ public class StreamTokenizer implements Tokenizer {
 	public boolean boolValue() {
 		checkValidToken(BOOL);
 		return boolValue;
+	}
+
+	@Override
+	public Optional optValue() {
+		checkValidToken(OPT);
+		return optValue;
 	}
 
 	@Override

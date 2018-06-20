@@ -116,9 +116,36 @@ public class TypeCheck implements Visitor<Type> {
 	    return BOOL;
     }
 
+    @Override
+	public Type visitOptLiteral(Exp value) {
+		//return new EmptyType(value.accept(this));
+		return new OptType(value.accept(this));
+	}
+
 	@Override
 	public Type visitListLiteral(ExpSeq exps) {
 		return new ListType(exps.accept(this));
+	}
+
+	@Override
+	public Type visitGet(Exp exp) {
+		Type elemType = exp.accept(this);
+		new OptType(elemType.getOptElemType()).checkEqual(elemType);
+		return exp.accept(this).getOptElemType();
+	}
+
+	@Override
+	public Type visitDef(Exp exp) {
+		Type elemType = exp.accept(this);
+		new OptType(elemType.getOptElemType()).checkEqual(elemType);
+		return BOOL;
+	}
+
+	@Override
+	public Type visitEmpty(Exp exp) {
+		Type elemType = exp.accept(this);
+		return new OptType(elemType.getOptElemType()).checkEqual(elemType);
+
 	}
 
 	@Override
@@ -134,17 +161,15 @@ public class TypeCheck implements Visitor<Type> {
 
     @Override
     public Type visitAnd(Exp left, Exp right) {
-//	    Type expected = left.accept(this);
-//	    right.accept(this).checkEqual(expected);
-		checkBinOp(left, right, BOOL);
+	    Type expected = left.accept(this);
+	    right.accept(this).checkEqual(expected);
 	    return BOOL;
     }
 
     @Override
     public Type visitEq(Exp left, Exp right) {
 	    Type expected  = left.accept(this);
-	    expected.checkEqual(right.accept(this));
-		//right.accept(this).checkEqual(expected);
+		right.accept(this).checkEqual(expected);
 	    return BOOL;
     }
 

@@ -18,4 +18,5 @@ public interface Value {
 		throw new ClassCastException("Expecting a boolean value");
 	}
 
+	default Value asValue() {throw new ClassCastException(("Expecting a value in an opt"));}
 }

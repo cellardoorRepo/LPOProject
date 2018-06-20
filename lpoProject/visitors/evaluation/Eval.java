@@ -2,13 +2,9 @@ package lpoProject.visitors.evaluation;
 
 import lpoProject.environments.EnvironmentException;
 import lpoProject.environments.GenEnvironment;
-import lpoProject.parser.ast.Exp;
-import lpoProject.parser.ast.ExpSeq;
-import lpoProject.parser.ast.Ident;
-import lpoProject.parser.ast.SimpleIdent;
-import lpoProject.parser.ast.Stmt;
-import lpoProject.parser.ast.StmtSeq;
+import lpoProject.parser.ast.*;
 import lpoProject.visitors.Visitor;
+
 
 public class Eval implements Visitor<Value> {
 
@@ -120,8 +116,31 @@ public class Eval implements Visitor<Value> {
 	}
 
 	@Override
+	public Value visitOptLiteral(Exp value) {
+	    return new OptValue(value.accept(this));
+	}
+
+	@Override
 	public Value visitListLiteral(ExpSeq exps) {
 		return exps.accept(this);
+	}
+
+	@Override
+	public Value visitGet(Exp exp) {
+		return exp.accept(this).asValue();
+	}
+
+	@Override
+	public Value visitDef(Exp exp) {
+		if(exp.accept(this) instanceof EmptyOpt)
+			return new BoolValue(false);
+		else
+			return new BoolValue(true);
+	}
+
+	@Override
+	public Value visitEmpty(Exp exp) {
+		return new EmptyOpt();
 	}
 
 	@Override
