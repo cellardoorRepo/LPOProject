@@ -42,6 +42,9 @@ public class StreamTokenizer implements Tokenizer {
 		keywords.put("do", DO);
 		keywords.put("while", WHILE);
 		keywords.put("opt", OPT);
+		keywords.put("get", GET);
+		keywords.put("empty", EMPTY);
+		keywords.put("def", DEF);
 	}
 
 	static {
@@ -76,8 +79,6 @@ public class StreamTokenizer implements Tokenizer {
 				tokenType = IDENT;
 			if(tokenType == BOOL)
 				boolValue = Boolean.parseBoolean(tokenString);
-			//if(tokenType == OPT)
-			//	optValue = Optional.ofNullable(tokenString);
 			return;
 		}
 		if (scanner.group(NUM.ordinal()) != null) { // NUM

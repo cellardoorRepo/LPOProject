@@ -1,16 +1,34 @@
 package lpoProject.visitors.typechecking;
 
+import static java.util.Objects.requireNonNull;
 
 public class OptType implements Type {
 
-    private Type elemType;
+    private final Type elemType;
 
-    public static final String TYPE_NAME = "opt";
+    public static final String TYPE_NAME = "OPT";
 
     public OptType(Type elemType) {
-        if(elemType == null)
-            this.elemType =
-        this.elemType = elemType;
+        this.elemType = requireNonNull(elemType);
+    }
+
+    public Type getElemType() {
+        return elemType;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof OptType))
+            return false;
+        OptType opt = (OptType) obj;
+        return elemType.equals(opt.elemType);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * elemType.hashCode();
     }
 
     @Override

@@ -126,6 +126,24 @@ public class Eval implements Visitor<Value> {
 	}
 
 	@Override
+	public Value visitGet(Exp exp) {
+		return exp.accept(this).asValue();
+	}
+
+	@Override
+	public Value visitDef(Exp exp) {
+		if(exp.accept(this) instanceof EmptyOpt)
+			return new BoolValue(false);
+		else
+			return new BoolValue(true);
+	}
+
+	@Override
+	public Value visitEmpty(Exp exp) {
+		return new EmptyOpt();
+	}
+
+	@Override
 	public Value visitMul(Exp left, Exp right) {
 		return new IntValue(left.accept(this).asInt() * right.accept(this).asInt());
 	}

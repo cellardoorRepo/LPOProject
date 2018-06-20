@@ -222,6 +222,12 @@ public class StreamParser implements Parser {
 			return parseRoundPar();
 			case OPT:
 				return parseOpt();
+			case GET:
+				return parseGet();
+			case EMPTY:
+				return parseEmpty();
+			case DEF:
+				return parseDef();
 		}
 	}
 
@@ -244,35 +250,28 @@ public class StreamParser implements Parser {
 	}
 
 	private OptLiteral parseOpt() throws ParserException {
-		//Optional val = tokenizer.optValue();
 		consume(OPT);
-		TokenType val = tokenizer.tokenType();
-		if(val != EOF && val != SKIP)
-			return new OptLiteral(parseAdd());
-		return new OptLiteral();
+		return new OptLiteral(parseExp());
+	}
 
-//		switch (val) {
-//			case NUM:
-//				int valueInt = tokenizer.intValue();
-//				//consume(NUM);
-//				return new OptLiteral(parseNum());
-//			case BOOL:
-//				boolean valueBool = tokenizer.boolValue();
-//				//consume(BOOL);
-//				return new OptLiteral(parseBool());
-//			case OPEN_LIST:
-//				return new OptLiteral(parseList());
-//			default:
-//				return new OptLiteral();
+	private Get parseGet() throws ParserException {
+		consume(GET);
+		if(tokenizer.tokenType() == IDENT)
+			return new Get(parseIdent());
+		return new Get(parseExp());
+	}
 
-		}
-//		if(tokenizer.tokenType() == BOOL) {
-//			boolean val = tokenizer.boolValue();
-//			consume(BOOL);
-//			return new OptLiteral<>(Optional.of(tokenizer.boolValue()));
-//		}
-		//return null;
-//	}
+	private Empty parseEmpty() throws ParserException {
+		consume(EMPTY);
+		if(tokenizer.tokenType() == IDENT)
+			return new Empty(parseIdent());
+		return new Empty(parseExp());
+	}
+
+	private Def parseDef() throws ParserException {
+		consume(DEF);
+		return new Def(parseExp());
+	}
 
 	private Not parseNot() throws ParserException {
 		consume(NOT);

@@ -6,7 +6,7 @@ import lpoProject.visitors.Visitor;
 
 public class OptLiteral implements Exp {
 
-   // private String type;
+    //private final String EMPTY = "";
     protected Exp value;
 
     public OptLiteral(){

@@ -12,17 +12,21 @@ public interface Visitor<T> {
 
 	T visitForEachStmt(Ident ident, Exp exp, StmtSeq block);
 
+	T visitGet(Exp exp);
+
 	T visitIfStmt(Exp guard, StmtSeq block, StmtSeq elseBlock);
 
 	T visitDoWhileStmt(StmtSeq block, Exp guard);
+
+	T visitDef(Exp exp);
+
+	T visitEmpty(Exp exp);
 
 	T visitIntLiteral(int value);
 
 	T visitBoolLiteral(boolean value);
 
 	T visitOptLiteral(Exp value);
-
-	//T visitIntOptLiteral(Integer value);
 
 	T visitListLiteral(ExpSeq exps);
 
