@@ -127,7 +127,10 @@ public class Eval implements Visitor<Value> {
 
 	@Override
 	public Value visitGet(Exp exp) {
-		return exp.accept(this).asValue();
+		if(exp.accept(this) instanceof EmptyOpt)
+			throw new EvaluatorException("Cannot get any value out of the empty optional value");
+		else
+			return exp.accept(this).asValue();
 	}
 
 	@Override
